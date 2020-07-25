@@ -117,6 +117,9 @@ import { merge, throwErr } from "../../utils";
  *      onMouseOverLink={onMouseOverLink}
  *      onMouseOutLink={onMouseOutLink}/>
  */
+
+let forceHasBeenCalculated = false;
+
 export default class Graph extends React.Component {
     /**
      * Obtain a set of properties which will be used to perform the focus and zoom animation if
@@ -183,6 +186,9 @@ export default class Graph extends React.Component {
      * @returns {undefined}
      */
     _graphBindD3ToReactComponent() {
+        // console.log("_graphBindD3ToReactComponent")
+        // console.log(this.state.d3Nodes)
+
         if (!this.state.config.d3.disableLinkForce) {
             this.state.simulation.nodes(this.state.d3Nodes).on("tick", this._tick);
             this._graphLinkForceConfig();
@@ -507,6 +513,12 @@ export default class Graph extends React.Component {
     UNSAFE_componentWillReceiveProps(nextProps) {
         const { graphElementsUpdated, newGraphElements } = checkForGraphElementsChanges(nextProps, this.state);
         const state = graphElementsUpdated ? initializeGraphState(nextProps, this.state) : this.state;
+
+        const d3Nodes = this.state.d3Nodes;
+
+        console.log(this.state.d3Nodes);
+        console.log(state.d3Nodes);
+
         const newConfig = nextProps.config || {};
         const { configUpdated, d3ConfigUpdated } = checkForGraphConfigChanges(nextProps, this.state);
         const config = configUpdated ? merge(DEFAULT_CONFIG, newConfig) : this.state.config;
